@@ -1,0 +1,33 @@
+<!DOCTYPE>
+
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+		<!-- jquery211 -->
+		<script src="http://libs.useso.com/js/jquery/2.1.1/jquery.min.js"></script>
+		<!-- bootstrap -->
+		<link rel="stylesheet" href="http://libs.useso.com/js/bootstrap/3.2.0/css/bootstrap.css">
+		<link rel="stylesheet" href="http://libs.useso.com/js/bootstrap/3.2.0/css/bootstrap-theme.css">
+		<script src="http://libs.useso.com/js/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+		<!-- end -->
+		{% block css_extra %}{% end %}
+		{% block js_extra %}{% end %}
+		{% block head_extra %}{% end %}
+	</head>
+
+	<body>
+	{% block body_wrap %}
+
+		{% block body_main_wrap %}
+		{% end %}{# body_main_wrap #}
+
+		<footer>
+		{% block footer_wrap %}
+			<hr />
+			<p>经销管理系统</p>
+		{% end %}{# footer_warp #}
+		</footer>
+
+	{% end %}{# body_warp #}
+	</body>
+</html>

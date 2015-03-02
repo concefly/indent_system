@@ -1,0 +1,73 @@
+{% extends "../base.html" %}
+
+{% block body_main_wrap %}
+<section>
+	<div class="container">
+		<div class="col-md-6">
+			<h1>Current Point</h1>
+			<table class="table">
+				<th>
+					<td>Item</td>
+					<td>Point</td>
+				</th>
+				<tr>
+					<td>Xianglingzhi</td>
+					<td>{{ this_user.point_xlz }}</td>
+				</tr>
+				<tr>
+					<td>Jinghuasu</td>
+					<td>{{ this_user.point_jhs }}</td>
+				</tr>
+				<tr>
+					<td>Nengliangbei</td>
+					<td>{{ this_user.point_nlb }}</td>
+				</tr>
+				<tr>
+					<td>Nengliangtang</td>
+					<td>{{ this_user.point_nlt }}</td>
+				</tr>
+				<tr>
+					<td>Child Member</td>
+					<td>{{ this_user.point_member }}</td>
+				</tr>
+				<tr>
+					<td>Total</td>
+					<td>{{ this_user.point }}</td>
+				</tr>
+			</table>
+		</div>
+		<div class="col-md-6">
+			<h1>Balance</h1>
+			<h2>{{ this_user.balance }}</h2>
+		</div>
+		<div class="col-md-6">
+			<h1>Members' network</h1>
+			<table class="table">
+				<th>
+					<td>#</td>
+					<td>Code</td>
+					<td>Name</td>
+					<td>Date joined</td>
+				</th>
+				{% for i,m in enumerate(this_user.members) %}
+				<tr>
+					<td>i</td>
+					<td>m.code</td>
+					<td>m.name</td>
+					<td>m.date_joined</td>
+				</tr>
+				{% end %}
+			</table>
+		</div>
+		<div class="col-md-6">
+			<h1>Functions</h1>
+			<button>Shop</button><br>
+			<button>History orders</button><br>
+			<button>Point transfer</button><br>
+			<button>Register member</button><br>
+			<button>Change password</button><br>
+			<button>Logout</button><br>
+		</div>
+	</div>
+</section>
+{% end %}{# body_main_wrap #}
