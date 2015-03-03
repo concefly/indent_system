@@ -6,13 +6,13 @@
 		<div class="col-md-6">
 			<h1>Current Point</h1>
 			<table class="table">
-				<th>
-					<td>Item</td>
-					<td>Point</td>
-				</th>
+				<tr>
+					<th>Item</th>
+					<th>Point</th>
+				</tr>
 				<tr>
 					<td>Xianglingzhi</td>
-					<td>{{ this_user.point_xlz }}</td>
+					<td>{{ this_user.point_xzl }}</td>
 				</tr>
 				<tr>
 					<td>Jinghuasu</td>
@@ -30,10 +30,7 @@
 					<td>Child Member</td>
 					<td>{{ this_user.point_member }}</td>
 				</tr>
-				<tr>
-					<td>Total</td>
-					<td>{{ this_user.point }}</td>
-				</tr>
+
 			</table>
 		</div>
 		<div class="col-md-6">
@@ -43,12 +40,12 @@
 		<div class="col-md-6">
 			<h1>Members' network</h1>
 			<table class="table">
-				<th>
-					<td>#</td>
-					<td>Code</td>
-					<td>Name</td>
-					<td>Date joined</td>
-				</th>
+				<tr>
+					<th>#</th>
+					<th>Code</th>
+					<th>Name</th>
+					<th>Date joined</th>
+				</tr>
 				{% for i,m in enumerate(this_user.members) %}
 				<tr>
 					<td>i</td>
@@ -61,12 +58,12 @@
 		</div>
 		<div class="col-md-6">
 			<h1>Functions</h1>
-			<button>Shop</button><br>
-			<button>History orders</button><br>
-			<button>Point transfer</button><br>
-			<button>Register member</button><br>
-			<button>Change password</button><br>
-			<button>Logout</button><br>
+			<a href="/member/shop" target="_blank">Shop</a><br>
+			<a href="#">History orders</a><br>
+			<a href="#">Point transfer</a><br>
+			<a href="#">Register member</a><br>
+			<a href="#">Change password</a><br>
+			<a href="#">Logout</a><br>
 		</div>
 	</div>
 </section>

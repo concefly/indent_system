@@ -1,0 +1,22 @@
+{% extends "../base.html" %}
+
+{% block body_main_wrap %}
+
+<div class="container">
+{% for this_commodity in Commodity.select(lambda c:c.is_onsell) %}
+	<div class="row">
+		<div class="col-md-4">
+			<img src="{{ this_commodity.img }}" alt="{{this_commodity.title}}" width="300" height="200">
+		</div>
+		<div class="col-md-8">
+			<h1>{{this_commodity.title}}</h1>
+			<h2>{{this_commodity.price_sell}}</h2>
+			<h2>{{this_commodity.count}}</h2>
+			<p>{{this_commodity.text}}</p>
+		</div>
+	</div>
+	<hr>
+{% end %}{# for #}
+</div>
+
+{% end %}{# body_main_wrap #}

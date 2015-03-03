@@ -148,13 +148,18 @@ class AuthLoginHandler(base_handler):
 		else :
 			self.redirect("/member/task")
 
+class AuthLogoutHandler(base_handler):
+	def get(self):
+		self.clear_cookie("user_id")
+		self.redirect(self.get_argument("next", "/"))
+
 class MemberTask(base_handler):
 	def auth_get(self):
 		this_user = [None]
 		with orm.db_session:
 			user_id = self.current_user
 			this_user[0] = User[user_id]
-		self.render(pjoin('member','task.html'), this_user=this_user[0])
+			self.render(pjoin('member','task.html'), this_user=this_user[0])
 
 class AdminTask(base_handler):
 	def auth_get(self):
@@ -399,6 +404,11 @@ class DataCommodities(base_handler):
 			res.append(act)
 		self.write_xml(res)
 
+class MemberShop(base_handler):
+	@orm.db_session
+	def auth_get(self):
+		self.render(pjoin('member','shop.html'),Commodity=Commodity)
+
 class Application(tweb.Application):
 	def __init__(self):
 		handlers = [
@@ -406,6 +416,7 @@ class Application(tweb.Application):
 			(r"/data/members", DataMembers),
 			(r"/data/commodities", DataCommodities),
 			# member
+			(r"/member/shop", MemberShop),
 			(r"/member/task", MemberTask),
 			# admin
 			(r"/admin/append_initial_member", AppendInitialMember),
@@ -415,7 +426,7 @@ class Application(tweb.Application):
 			(r"/admin/task", AdminTask),
 			# auth
 			(r"/auth/login", AuthLoginHandler),
-			# (r"/auth/logout", AuthLogoutHandler),
+			(r"/auth/logout", AuthLogoutHandler),
 			(r"/", base_handler),
 		]
 		settings = dict(
