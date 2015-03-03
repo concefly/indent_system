@@ -334,7 +334,7 @@ class DataCommodities(base_handler):
 		('point'       ,('point',)),
 		('text'        ,('text',)),
 		('is_onsell'   ,('is_onsell',)),]
-	user_field_processor = {
+	post_field_processor = {
 		"is_onsell" : lambda x: True if x=='True' else False,
 	}
 	post_field = user_field
@@ -357,7 +357,11 @@ class DataCommodities(base_handler):
 				for name,models in self.user_field:
 					cell = et.Element("cell")
 					try:
-						cell.text = str(eval("this_user.%s" %(".".join(models),)))
+						value = eval("this_user.%s" %(".".join(models),))
+						cell.text = str(value)
+						if hasattr(self,'user_field_processor'):
+							if self.user_field_processor.has_key(name):
+								cell.text = self.user_field_processor[name](value)
 					except AttributeError:
 						cell.text = '-'
 					row.append(cell)
@@ -383,9 +387,9 @@ class DataCommodities(base_handler):
 					this_user = self.model[gr_id]
 					for name,models in self.post_field:
 						_model = reduce(lambda x,y:getattr(x,y), models[:-1], this_user)
-						if hasattr(self,"user_field_processor"):
-							if self.user_field_processor.has_key(name):
-								field[name] = self.user_field_processor[name](field[name])
+						if hasattr(self,"post_field_processor"):
+							if self.post_field_processor.has_key(name):
+								field[name] = self.post_field_processor[name](field[name])
 						setattr(_model,models[-1],field[name])
 				if status=="inserted":
 					init_field = dict(field)
@@ -418,31 +422,67 @@ class MemberPlaceOrder(base_handler):
 			commodity_id = int(self.get_body_argument("commodity_id"))
 			count        = int(self.get_body_argument("count"))
 			# TODO: 检查库存和余额
+			this_order = Log_order(
+				user        = User[self.current_user],
+				datetime    = datetime.datetime.now(),
+				is_verified = False,)
+			this_bill = Commodity_bill(
+				count     = count,
+				datetime  = datetime.datetime.now(),
+				log_order = this_order,
+				commodity = Commodity[commodity_id])
+			this_order.commodity_bills.add(this_bill)
 			self.render(pjoin('member','operate_ok.html'))
 		except:
 			raise
 
+class DataHistoryOrder(DataCommodities):
+	model = Log_order
+	user_field = [
+		# (field name, (models...))
+		('order_code'  ,('id',)),
+		('datetime'    ,('datetime',)),
+		('verified'    ,('is_verified',)),
+		('commodities' ,('commodity_bills',))]
+	def commodities_processor(bills):
+		s = ['']
+		for bill in bills:
+			s[0] += '%s:%s ' %(bill.commodity.title, bill.count)
+		return s[0]
+	user_field_processor = {
+		'verified'    : lambda x: "True" if x else "False",
+		'commodities' : commodities_processor,
+	}
+	default_frame = os.path.join(__dir__,"static","frame","history_order_grid_default.xml")
+	def auth_post(self):
+		pass
+
+class MemberHistoryOrder(base_handler):
+	def auth_get(self):
+		self.render(pjoin('member','history_order.html'))
 
 class Application(tweb.Application):
 	def __init__(self):
 		handlers = [
 			# data
-			(r"/data/members", DataMembers),
-			(r"/data/commodities", DataCommodities),
+			(r"/data/members"       , DataMembers),
+			(r"/data/history_order" , DataHistoryOrder),
+			(r"/data/commodities"   , DataCommodities),
 			# member
-			(r"/member/shop", MemberShop),
-			(r"/member/place_order", MemberPlaceOrder),
-			(r"/member/task", MemberTask),
+			(r"/member/shop"          , MemberShop),
+			(r"/member/history_order" , MemberHistoryOrder),
+			(r"/member/place_order"   , MemberPlaceOrder),
+			(r"/member/task"          , MemberTask),
 			# admin
-			(r"/admin/append_initial_member", AppendInitialMember),
-			(r"/admin/append_normal_member", AppendNormalMember),
-			(r"/admin/member_list", MemberList),
-			(r"/admin/commodity_manager", CommodityManager),
-			(r"/admin/task", AdminTask),
+			(r"/admin/append_initial_member" , AppendInitialMember),
+			(r"/admin/append_normal_member"  , AppendNormalMember),
+			(r"/admin/member_list"           , MemberList),
+			(r"/admin/commodity_manager"     , CommodityManager),
+			(r"/admin/task"                  , AdminTask),
 			# auth
-			(r"/auth/login", AuthLoginHandler),
-			(r"/auth/logout", AuthLogoutHandler),
-			(r"/", base_handler),
+			(r"/auth/login"  , AuthLoginHandler),
+			(r"/auth/logout" , AuthLogoutHandler),
+			(r"/"            , base_handler),
 		]
 		settings = dict(
 				# blog_title    = u"Tornado Blog",

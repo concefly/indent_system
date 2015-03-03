@@ -1,0 +1,17 @@
+<rows>
+  <head>
+    <column width="5" id="no" type="ro" align="center" sort="str">#</column>
+    <column width="5" id="order_code"   type="ro" align="center" sort="str">Order code</column>
+    <column width="20" id="datetime"   type="ro" align="center" sort="str">Datetime</column>
+    <column width="10" id="verified" type="ro" align="center" sort="str">Verified</column>
+    <column width="60" id="commodities" type="ro" align="left" sort="str">Commodities</column>
+    <settings>
+      <colwidth>%</colwidth>
+    </settings>
+    <beforeInit>
+      <call command="attachHeader">
+        <param>#text_filter,#text_filter,#text_filter,#select_filter,#text_filter</param>
+      </call> 
+    </beforeInit>
+  </head>
+</rows>
