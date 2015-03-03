@@ -1,0 +1,47 @@
+{% extends "../base.html" %}
+
+{% block body_main_wrap %}
+<section>
+	<div class="container">
+		<div class="col-md-3">
+			<h1>Append normal member</h1>
+			<form action="append_normal_member" method="POST">
+				<fieldset>
+					{% raw xsrf_form_html() %}
+					<div class="form-group">
+						<label for="parent_member">Parent member's code</label>
+						<input type="text" class="form-control" id="parent_member" name="parent_member">
+					</div>
+					<div class="form-group">
+						<label for="user_code">New user's code</label>
+						<input type="text" class="form-control" id="user_code" name="user_code">
+					</div>
+					<div class="form-group">
+						<label for="name">New user's name</label>
+						<input type="text" class="form-control" id="name" name="name">
+					</div>
+					<div class="form-group">
+						<label for="password">New user's password</label>
+						<input type="text" class="form-control" id="password" name="password">
+					</div>
+					<div class="form-group">
+						<label for="mobile">New user's mobile</label>
+						<input type="text" class="form-control" id="mobile" name="mobile">
+					</div>
+					<div class="form-group">
+						<label for="address">New user's address</label>
+						<input type="text" class="form-control" id="address" name="address">
+					</div>
+					<div class="form-group">
+						<label for="email">New user's email</label>
+						<input type="email" class="form-control" id="email" name="email">
+					</div>
+					<div class="form-group">
+						<input type="submit">
+					</div>
+				</fieldset>
+			</form>
+		</div>
+	</div>
+</section>
+{% end %}{# body_main_wrap #}

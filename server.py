@@ -34,6 +34,7 @@ class User(db.Entity):
 	name          = orm.Optional(str)
 	email         = orm.Optional(str)
 	mobile        = orm.Optional(str)
+	address       = orm.Optional(str)
 	code          = orm.Optional(str, unique=True)
 	balance       = orm.Required(float)
 	# point         = orm.Required(float)
@@ -186,6 +187,44 @@ class AppendInitialMember(base_handler):
 				point_nlb    = 0)
 		self.render(pjoin('admin','operate_ok.html'))
 
+class AppendNormalMember(base_handler):
+	def auth_get(self):
+		self.render(pjoin('admin','append_normal_member.html'))
+	def auth_post(self):
+		parent_member = self.get_body_argument("parent_member")
+		user_code     = self.get_body_argument("user_code")
+		name          = self.get_body_argument("name")
+		password      = self.get_body_argument("password")
+		mobile        = self.get_body_argument("mobile")
+		address       = self.get_body_argument("address")
+		email         = self.get_body_argument("email")
+		with orm.db_session:
+			if User.get(code=user_code):
+				self.write("User already exist")
+				return
+			if not User.get(code=parent_member):
+				self.write("Parent not exist")
+				return
+			new_user = User(
+				parent_member = User.get(code=parent_member),
+				code         = user_code,
+				last_login   = datetime.datetime.now(),
+				user_type    = 'member',
+				is_active    = True,
+				date_joined  = datetime.datetime.now(),
+				balance      = 0,
+				point_member = 0,
+				point_jhs    = 0,
+				point_xzl    = 0,
+				point_nlt    = 0,
+				point_nlb    = 0,
+				name         = name,
+				password     = password,
+				mobile       = mobile,
+				address      = address,
+				email        = email)
+		self.render(pjoin('admin','operate_ok.html'))
+
 class MemberList(base_handler):
 	def auth_get(self):
 		self.render(pjoin('admin','member_list.html'))
@@ -282,6 +321,7 @@ class Application(tweb.Application):
 			(r"/member/task", MemberTask),
 			# admin
 			(r"/admin/append_initial_member", AppendInitialMember),
+			(r"/admin/append_normal_member", AppendNormalMember),
 			(r"/admin/member_list", MemberList),
 			(r"/admin/task", AdminTask),
 			# auth
