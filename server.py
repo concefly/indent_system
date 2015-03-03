@@ -167,12 +167,13 @@ class AppendInitialMember(base_handler):
 	def auth_get(self):
 		self.render(pjoin('admin','append_initial_member.html'))
 	def auth_post(self):
-		user_code = self.get_argument("user_code")
+		user_code = self.get_body_argument("user_code")
 		with orm.db_session:
 			if User.get(code=user_code):
 				self.write("User already exist")
 				return
 			new_user = User(
+				code         = user_code,
 				last_login   = datetime.datetime.now(),
 				user_type    = 'member',
 				is_active    = True,
