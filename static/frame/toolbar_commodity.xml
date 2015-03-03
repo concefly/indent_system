@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<toolbar>
+	<item id="newCommodity" type="button" text="New" />
+	<item id="delCommodity" type="button" text="Delete" />
+	<item id="sep01" type="separator"/>         
+</toolbar>

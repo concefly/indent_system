@@ -1,0 +1,21 @@
+<rows>
+  <head>
+    <column width="5" id="no" type="ro" align="center" sort="str">#</column>
+    <column width="10" id="title"   type="ro" align="center" sort="str">Title</column>
+    <column width="10" id="img"   type="ro" align="center" sort="str">Img url</column>
+    <column width="10" id="price_sell" type="ro" align="center" sort="str">Price for selling</column>
+    <column width="10" id="price_stock" type="ro" align="center" sort="str">Price for stocking</column>
+    <column width="10" id="count" type="ro" align="center" sort="str">Count</column>
+    <column width="10" id="point" type="ro" align="center" sort="str">Point</column>
+    <column width="25" id="text" type="ro" align="center" sort="str">Text</column>
+    <column width="10" id="is_onsell" type="ro" align="center" sort="str">On sell</column>
+    <settings>
+      <colwidth>%</colwidth>
+    </settings>
+    <beforeInit>
+      <call command="attachHeader">
+        <param>#text_filter,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter</param>
+      </call> 
+    </beforeInit>
+  </head>
+</rows>

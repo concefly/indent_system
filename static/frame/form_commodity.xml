@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<items>
+	<item type="input" label="Title" name="title" offsetLeft="15"/>
+	<item type="input" label="Img url" name="img" offsetLeft="15"/>
+	<item type="input" label="Price for selling" name="price_sell" offsetLeft="15"/>
+	<item type="input" label="Price for stocking" name="price_stock" offsetLeft="15"/>
+	<item type="input" label="Count" name="count" offsetLeft="15"/>
+	<item type="input" label="Point" name="point" offsetLeft="15"/>
+	<item type="input" label="Text" name="text" offsetLeft="15"/>
+	<item type="select" label="On sell" name="is_onsell">
+		<option value="1" text="yes"/>
+		<option value="0" text="No"/>
+	</item>
+
+	<item type="button"  value="Save" offsetTop="15" offsetLeft="230"/>
+</items>
