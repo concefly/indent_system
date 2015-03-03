@@ -122,7 +122,7 @@ class base_handler(tweb.RequestHandler):
 		if isinstance(x,et.Element):
 			x = et.tostring(x,encoding="utf-8")
 		self.write(x)
-		self.orm.set_header("Content-Type","text/xml")
+		self.set_header("Content-Type","text/xml")
 
 class MainHandler(base_handler):
 	def get(self):
@@ -185,13 +185,103 @@ class AppendInitialMember(base_handler):
 				point_nlb    = 0)
 		self.render(pjoin('admin','operate_ok.html'))
 
+class MemberList(base_handler):
+	def auth_get(self):
+		self.render(pjoin('admin','member_list.html'))
+
+class DataMembers(base_handler):
+	user_field = [
+		# (field name, (models...))
+		("user_code",("code",)),
+		("date_joined",('date_joined',)),
+		("parent_member",('parent_member','code')),
+		("balance",('balance',)),
+		("point_member",('point_member',)),
+		("point_xzl",('point_xzl',)),
+		("point_jhs",('point_jhs',)),
+		("point_nlb",('point_nlb',)),
+		("point_nlt",('point_nlt',)),]
+	post_field = [
+		# (field name, (models...))
+		("balance",('balance',)),
+		("point_member",('point_member',)),
+		("point_xzl",('point_xzl',)),
+		("point_jhs",('point_jhs',)),
+		("point_nlb",('point_nlb',)),
+		("point_nlt",('point_nlt',)),]
+	default_frame = os.path.join(__dir__,"static","frame","member_default.xml")
+	def auth_get(self):
+		if hasattr(self,"default_frame"):
+			rows = et.parse(self.default_frame).getroot()
+		else:
+			rows = et.Element('rows')
+		with orm.db_session:
+			query = User.select()
+			for n,this_user in enumerate(query):
+				row = et.Element("row")
+				row.set("id",str(this_user.id))
+				# 填充序号
+				cell = et.Element("cell")
+				cell.text = str(n+1)
+				row.append(cell)
+				# 填充字段
+				for name,models in self.user_field:
+					cell = et.Element("cell")
+					try:
+						cell.text = str(eval("this_user.%s" %(".".join(models),)))
+					except AttributeError:
+						cell.text = '-'
+					# cell.text = str(reduce(lambda x,y:getattr(x,y), models, this_user))
+					row.append(cell)
+				# 
+				rows.append(row)
+		self.write_xml(rows)
+	def auth_post(self):
+		if self.get_argument("editing",default=None) != "true":
+			return
+		ids = self.get_body_argument("ids",default="").split(',')
+		res = et.Element("data")
+		for _id in ids:
+			gr_id = self.get_body_argument("%s_gr_id" %(_id,))
+			field = {}
+			# 获取POST参数
+			for name,models in self.post_field:
+				field[name] = self.get_body_argument("%s_%s" %(_id,name))
+			status = self.get_body_argument("%s_!nativeeditor_status" %(_id,))
+			# 写入数据库
+			tid = [gr_id]
+			with orm.db_session:
+				if status=="updated":
+					this_user = User[gr_id]
+					for name,models in self.post_field:
+						exec("this_user.%s=%s" %(".".join(models), field[name]))
+				if status=="inserted":
+					init_field = dict(field)
+					this_user = User(**init_field)
+					# 提交以更新id
+					orm.commit()
+					tid[0] = str(r.id)
+				if status=="deleted":
+					this_user = User[gr_id]
+					User[gr_id].delete()
+			# 插入一条 action xml item
+			act = et.Element("action")
+			act.set("type",status)
+			act.set("sid",gr_id)
+			act.set("tid",tid[0])
+			res.append(act)
+		self.write_xml(res)
+
 class Application(tweb.Application):
 	def __init__(self):
 		handlers = [
+			# data
+			(r"/data/members", DataMembers),
 			# member
 			(r"/member/task", MemberTask),
 			# admin
 			(r"/admin/append_initial_member", AppendInitialMember),
+			(r"/admin/member_list", MemberList),
 			(r"/admin/task", AdminTask),
 			# auth
 			(r"/auth/login", AuthLoginHandler),
@@ -203,7 +293,7 @@ class Application(tweb.Application):
 				template_path   = os.path.join(__dir__, "templates"),
 				static_path     = os.path.join(__dir__, "static"),
 				# ui_modules    = {"Entry": EntryModule},
-				xsrf_cookies    = True,
+				xsrf_cookies    = False,
 				cookie_secret   = "E@NEIVcZ)26=JUQ,B0H0B6VvamU*Ks",
 				login_url       = "/auth/login",
 				debug           = True,

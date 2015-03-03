@@ -1,11 +1,14 @@
 <?xml version="1.0"?>
 <items>
-    <item type="settings"  inputWidth="220"  position="label-left"  labelWidth="70"/>
-	<item type="input" label="姓名" name="name" offsetLeft="15"/>
-    <item type="input" label="电话"  name="mobile" offsetLeft="15"/>
-    <!-- <item type="input" label="分组"  name="group" offsetLeft="15"/> -->
-    <item type="select" label="分组" name="group" offsetLeft="15" connector="/data/contacts/group/options"/>
-    <item type="input" label="标签"  name="tag" offsetLeft="15"/>
-	<item type="button"  value="保存" offsetTop="15" offsetLeft="230"/>
-	<item type="button"  value="删除" offsetTop="15" offsetLeft="230"/>
+	<item type="input" label="User code" name="user_code" disabled='true' offsetLeft="15"/>
+	<item type="input" label="Date joined" name="date_joined" disabled='true' offsetLeft="15"/>
+	<item type="input" label="Parent member code" name="parent_member" disabled='true' offsetLeft="15"/>
+	<item type="input" label="Balance" name="balance" offsetLeft="15"/>
+	<item type="input" label="Point of member" name="point_member" offsetLeft="15"/>
+	<item type="input" label="Point of xlz" name="point_xzl" offsetLeft="15"/>
+	<item type="input" label="Point of jhs" name="point_jhs" offsetLeft="15"/>
+	<item type="input" label="Point of nlb" name="point_nlb" offsetLeft="15"/>
+	<item type="input" label="Point of nlt" name="point_nlt" offsetLeft="15"/>
+
+	<item type="button"  value="Save" offsetTop="15" offsetLeft="230"/>
 </items>
