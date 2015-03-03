@@ -1,5 +1,7 @@
 {% extends "../base.html" %}
 
+{% block meta_title %}task panel{% end %}
+
 {% block body_main_wrap %}
 <section>
 	<div class="container">
@@ -48,10 +50,10 @@
 				</tr>
 				{% for i,m in enumerate(this_user.members) %}
 				<tr>
-					<td>i</td>
-					<td>m.code</td>
-					<td>m.name</td>
-					<td>m.date_joined</td>
+					<td>{{i}}</td>
+					<td>{{m.code}}</td>
+					<td>{{m.name}}</td>
+					<td>{{m.date_joined}}</td>
 				</tr>
 				{% end %}
 			</table>
@@ -61,9 +63,9 @@
 			<a href="/member/shop" target="_blank">Shop</a><br>
 			<a href="/member/history_order" target="_blank">History orders</a><br>
 			<a href="#">Point transfer</a><br>
-			<a href="#">Register member</a><br>
+			<a href="/member/register_member" target="_blank">Register member</a><br>
 			<a href="#">Change password</a><br>
-			<a href="#">Logout</a><br>
+			<a href="/auth/logout">Logout</a><br>
 		</div>
 	</div>
 </section>

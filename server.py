@@ -27,22 +27,21 @@ db = orm.Database('sqlite', 'dev.sq3', create_db=True)
 class User(db.Entity):
 	id            = orm.PrimaryKey(int, auto=True)
 	password      = orm.Optional(str)
-	last_login    = orm.Required(datetime.datetime)
-	user_type     = orm.Required(str)
-	is_active     = orm.Required(bool)
-	date_joined   = orm.Required(datetime.datetime)
+	last_login    = orm.Optional(datetime.datetime)
+	user_type     = orm.Optional(str, default='member')
+	is_active     = orm.Optional(bool, default=True)
+	date_joined   = orm.Optional(datetime.datetime)
 	name          = orm.Optional(str)
 	email         = orm.Optional(str)
 	mobile        = orm.Optional(str)
 	address       = orm.Optional(str)
 	code          = orm.Optional(str, unique=True)
-	balance       = orm.Required(float)
-	# point         = orm.Required(float)
-	point_member  = orm.Required(float)
-	point_xzl     = orm.Required(float)
-	point_jhs     = orm.Required(float)
-	point_nlb     = orm.Required(float)
-	point_nlt     = orm.Required(float)
+	balance       = orm.Optional(float, default=0)
+	point_member  = orm.Optional(float, default=0)
+	point_xzl     = orm.Optional(float, default=0)
+	point_jhs     = orm.Optional(float, default=0)
+	point_nlb     = orm.Optional(float, default=0)
+	point_nlt     = orm.Optional(float, default=0)
 	members       = orm.Set("User", reverse="parent_member")
 	parent_member = orm.Optional("User", reverse="members")
 	orders        = orm.Set("Log_order")
@@ -55,8 +54,8 @@ class User(db.Entity):
 class Log_order(db.Entity):
 	id              = orm.PrimaryKey(int, auto=True)
 	user            = orm.Required(User)
-	datetime        = orm.Required(datetime.datetime)
-	is_verified     = orm.Required(bool)
+	datetime        = orm.Optional(datetime.datetime)
+	is_verified     = orm.Optional(bool, default=False)
 	commodity_bills = orm.Set("Commodity_bill")
 
 
@@ -78,21 +77,21 @@ class Log_point(db.Entity):
 
 class Commodity(db.Entity):
 	id          = orm.PrimaryKey(int, auto=True)
-	price_sell  = orm.Required(float)
-	price_stock = orm.Required(float)
-	point       = orm.Required(float)
-	count       = orm.Required(int)
+	price_sell  = orm.Optional(float, default=0)
+	price_stock = orm.Optional(float, default=0)
+	point       = orm.Optional(float, default=0)
+	count       = orm.Optional(int, default=0)
 	title       = orm.Optional(str)
 	text        = orm.Optional(str)
 	img         = orm.Optional(str)
-	is_onsell   = orm.Required(bool)
+	is_onsell   = orm.Optional(bool, default=True)
 	bills       = orm.Set("Commodity_bill")
 
 
 class Commodity_bill(db.Entity):
 	id        = orm.PrimaryKey(int, auto=True)
 	count     = orm.Required(int)
-	datetime  = orm.Required(datetime.datetime)
+	datetime  = orm.Optional(datetime.datetime)
 	log_order = orm.Required(Log_order)
 	commodity = orm.Required(Commodity)
 
@@ -461,6 +460,35 @@ class MemberHistoryOrder(base_handler):
 	def auth_get(self):
 		self.render(pjoin('member','history_order.html'))
 
+class MemberRegisterMember(base_handler):
+	def auth_get(self):
+		self.render(pjoin('member','register_member.html'))
+	@orm.db_session
+	def auth_post(self):
+		name          = self.get_body_argument("name")
+		password      = self.get_body_argument("password")
+		mobile        = self.get_body_argument("mobile")
+		address       = self.get_body_argument("address")
+		email         = self.get_body_argument("email")
+		new_user = User(
+			parent_member = User[self.current_user],
+			last_login    = datetime.datetime.now(),
+			user_type     = 'member',
+			is_active     = True,
+			date_joined   = datetime.datetime.now(),
+			balance       = 0,
+			point_member  = 0,
+			point_jhs     = 0,
+			point_xzl     = 0,
+			point_nlt     = 0,
+			point_nlb     = 0,
+			name          = name,
+			password      = password,
+			mobile        = mobile,
+			address       = address,
+			email         = email)
+		self.render(pjoin('member','operate_ok.html'))
+
 class Application(tweb.Application):
 	def __init__(self):
 		handlers = [
@@ -471,6 +499,7 @@ class Application(tweb.Application):
 			# member
 			(r"/member/shop"          , MemberShop),
 			(r"/member/history_order" , MemberHistoryOrder),
+			(r"/member/register_member" , MemberRegisterMember),
 			(r"/member/place_order"   , MemberPlaceOrder),
 			(r"/member/task"          , MemberTask),
 			# admin
