@@ -409,6 +409,20 @@ class MemberShop(base_handler):
 	def auth_get(self):
 		self.render(pjoin('member','shop.html'),Commodity=Commodity)
 
+class MemberPlaceOrder(base_handler):
+	def auth_get(self):
+		self.redirect("/member/shop")
+	@orm.db_session
+	def auth_post(self):
+		try:
+			commodity_id = int(self.get_body_argument("commodity_id"))
+			count        = int(self.get_body_argument("count"))
+			# TODO: 检查库存和余额
+			self.render(pjoin('member','operate_ok.html'))
+		except:
+			raise
+
+
 class Application(tweb.Application):
 	def __init__(self):
 		handlers = [
@@ -417,6 +431,7 @@ class Application(tweb.Application):
 			(r"/data/commodities", DataCommodities),
 			# member
 			(r"/member/shop", MemberShop),
+			(r"/member/place_order", MemberPlaceOrder),
 			(r"/member/task", MemberTask),
 			# admin
 			(r"/admin/append_initial_member", AppendInitialMember),
