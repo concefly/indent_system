@@ -113,7 +113,7 @@ class base_handler(tweb.RequestHandler):
 		pass
 
 	def post(self,*a,**ka):
-		auth_post(*a,**ka)
+		self.auth_post(*a,**ka)
 	@tweb.authenticated
 	def auth_post(self,*a,**ka):
 		pass
@@ -163,11 +163,37 @@ class AdminTask(base_handler):
 			this_user[0] = User[user_id]
 		self.render(pjoin('admin','task.html'), this_user=this_user[0])
 
+class AppendInitialMember(base_handler):
+	def auth_get(self):
+		self.render(pjoin('admin','append_initial_member.html'))
+	def auth_post(self):
+		user_code = self.get_argument("user_code")
+		with orm.db_session:
+			if User.get(code=user_code):
+				self.write("User already exist")
+				return
+			new_user = User(
+				last_login   = datetime.datetime.now(),
+				user_type    = 'member',
+				is_active    = True,
+				date_joined  = datetime.datetime.now(),
+				balance      = 0,
+				point_member = 0,
+				point_jhs    = 0,
+				point_xzl    = 0,
+				point_nlt    = 0,
+				point_nlb    = 0)
+		self.render(pjoin('admin','operate_ok.html'))
+
 class Application(tweb.Application):
 	def __init__(self):
 		handlers = [
+			# member
 			(r"/member/task", MemberTask),
+			# admin
+			(r"/admin/append_initial_member", AppendInitialMember),
 			(r"/admin/task", AdminTask),
+			# auth
 			(r"/auth/login", AuthLoginHandler),
 			# (r"/auth/logout", AuthLogoutHandler),
 			(r"/", base_handler),
