@@ -1,0 +1,22 @@
+<rows>
+  <head>
+    <column width="10" id="no"   type="ro" align="center" sort="str">#</column>
+    <column width="10" id="user_code"   type="ro" align="center" sort="str">User code</column>
+    <column width="10" id="date_joined" type="ro" align="center" sort="str">Date joined</column>
+    <column width="10" id="parent_member" type="ro" align="center" sort="str">Parent member</column>
+    <column width="10" id="balance" type="ro" align="center" sort="str">Balance</column>
+    <column width="10" id="point_member" type="ro" align="center" sort="str">Point member</column>
+    <column width="10" id="point_xzl" type="ro" align="center" sort="str">Point xzl</column>
+    <column width="10" id="point_jhs" type="ro" align="center" sort="str">Point jhs</column>
+    <column width="10" id="point_nlb" type="ro" align="center" sort="str">Point nlb</column>
+    <column width="10" id="point_nlt" type="ro" align="center" sort="str">Point nlt</column>
+    <settings>
+      <colwidth>%</colwidth>
+    </settings>
+    <beforeInit>
+      <call command="attachHeader">
+        <param>#text_filter,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter</param>
+      </call> 
+    </beforeInit>
+  </head>
+</rows>

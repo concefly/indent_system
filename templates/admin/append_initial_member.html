@@ -1,0 +1,27 @@
+{% extends "../base.html" %}
+
+{% block body_main_wrap %}
+<section>
+	<div class="container">
+		<div class="col-md-3">
+			<h1>Append initial member</h1>
+			<form action="append_initial_member" method="POST">
+				<fieldset>
+					{% raw xsrf_form_html() %}
+					<div class="form-group">
+						<label for="user_code">User code</label>
+						<input type="text" class="form-control" id="user_code" name="user_code">
+					</div>
+					<div class="form-group">
+						<label for="password">Password</label>
+						<input type="text" class="form-control" id="password" name="password">
+					</div>
+					<div class="form-group">
+						<input type="submit">
+					</div>
+				</fieldset>
+			</form>
+		</div>
+	</div>
+</section>
+{% end %}{# body_main_wrap #}
