@@ -329,6 +329,9 @@ class DataCommodities(base_handler):
 		('point'       ,('point',)),
 		('text'        ,('text',)),
 		('is_onsell'   ,('is_onsell',)),]
+	user_field_processor = {
+		"is_onsell" : lambda x: True if x=='True' else False,
+	}
 	post_field = user_field
 	default_frame = os.path.join(__dir__,"static","frame","commodity_grid_default.xml")
 	def auth_get(self):
@@ -375,6 +378,9 @@ class DataCommodities(base_handler):
 					this_user = self.model[gr_id]
 					for name,models in self.post_field:
 						_model = reduce(lambda x,y:getattr(x,y), models[:-1], this_user)
+						if hasattr(self,"user_field_processor"):
+							if self.user_field_processor.has_key(name):
+								field[name] = self.user_field_processor[name](field[name])
 						setattr(_model,models[-1],field[name])
 				if status=="inserted":
 					init_field = dict(field)

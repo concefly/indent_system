@@ -6,10 +6,10 @@
 	<item type="input" label="Price for stocking" name="price_stock" offsetLeft="15"/>
 	<item type="input" label="Count" name="count" offsetLeft="15"/>
 	<item type="input" label="Point" name="point" offsetLeft="15"/>
-	<item type="input" label="Text" name="text" offsetLeft="15"/>
+	<item type="input" label="Text" name="text" rows="10" offsetLeft="15"/>
 	<item type="select" label="On sell" name="is_onsell">
-		<option value="1" text="yes"/>
-		<option value="0" text="No"/>
+		<option value="True" text="True"/>
+		<option value="False" text="False"/>
 	</item>
 
 	<item type="button"  value="Save" offsetTop="15" offsetLeft="230"/>
