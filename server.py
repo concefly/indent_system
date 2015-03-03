@@ -37,6 +37,7 @@ class User(db.Entity):
 	address       = orm.Optional(str)
 	code          = orm.Optional(str, unique=True)
 	balance       = orm.Optional(float, default=0)
+	point_total   = orm.Optional(float, default=0)
 	point_member  = orm.Optional(float, default=0)
 	point_xzl     = orm.Optional(float, default=0)
 	point_jhs     = orm.Optional(float, default=0)
@@ -489,6 +490,26 @@ class MemberRegisterMember(base_handler):
 			email         = email)
 		self.render(pjoin('member','operate_ok.html'))
 
+class MemberPointTransfer(base_handler):
+	@orm.db_session
+	def auth_get(self):
+		self.render(pjoin('member','point_transfer.html'),
+			Log_point=Log_point,
+			this_user=User[self.current_user])
+	def auth_post(self):
+		target_code    = self.get_body_argument('target_code')
+		transfer_point = self.get_body_argument('transfer_point')
+		with orm.db_session:
+			target_user = User.get(code=target_code)
+			source_user = User[self.current_user]
+			if not target_user or not source_user:
+				self.redirect('/member/point_transfer')
+				return
+			# TODO 积分验证
+			target_user.point_total += transfer_point
+			source_user.point_total -= transfer_point
+		self.render('member','operate_ok.html')
+
 class Application(tweb.Application):
 	def __init__(self):
 		handlers = [
@@ -499,6 +520,7 @@ class Application(tweb.Application):
 			# member
 			(r"/member/shop"          , MemberShop),
 			(r"/member/history_order" , MemberHistoryOrder),
+			(r"/member/point_transfer" , MemberPointTransfer),
 			(r"/member/register_member" , MemberRegisterMember),
 			(r"/member/place_order"   , MemberPlaceOrder),
 			(r"/member/task"          , MemberTask),

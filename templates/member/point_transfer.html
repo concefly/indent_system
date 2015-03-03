@@ -1,0 +1,51 @@
+{% extends "../base.html" %}
+
+{% block meta_title %}Point transfer{% end %}
+
+{% block body_main_wrap %}
+<section>
+	<div class="container">
+		<div class="col-md-8">
+			<table class="table">
+				<tr>
+					<th>#</th>
+					<th>Source member's code</th>
+					<th>Source member's name</th>
+					<th>Target member's code</th>
+					<th>Target member's name</th>
+					<th>Point</th>
+					<th>Datetime</th>
+				</tr>
+				{% for n,log in enumerate(Log_point.select(lambda x:this_user == x.point_from or this_user == x.point_to).order_by(Log_point.datetime)) %}
+				<tr>
+					<td>{{n+1}}</td>
+					<td>{{log.point_from.code}}</td>
+					<td>{{log.point_from.name}}</td>
+					<td>{{log.point_to.code}}</td>
+					<td>{{log.point_to.name}}</td>
+					<td>{{log.count}}</td>
+					<td>{{log.datetime}}</td>
+				</tr>
+				{% end %}
+			</table>
+		</div>
+		<div class="col-md-4">
+			<form action="point_transfer" method="POST">
+				<fieldset>
+					<div class="form-group">
+						<label for="target_code">Target member's code</label>
+						<input type="text" id="target_code" name="target_code" class="form-control">
+					</div>
+					<div class="form-group">
+						<label for="transfer_point">Transfer point</label>
+						<input type="text" id="transfer_point" name="transfer_point" class="form-control">
+					</div>
+					<div class="form-group">
+						<input type="submit">
+					</div>
+				</fieldset>
+			</form>
+		</div>
+	</div>
+</section>
+{% end %}{# body_main_wrap #}
